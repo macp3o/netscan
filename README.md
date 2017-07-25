@@ -1,6 +1,6 @@
-# Linux Netscan for Dell 1600n Network Scanner 
+# Linux Netscan for Dell 1600n
 
-_Linux network scan utility for Dell 1600n network scanner_
+_Linux network scan utility for the Dell 1600n network printer/scanner_
 
 
 ## Quick Start
@@ -13,7 +13,7 @@ Alternative options include: tiff and jpeg. Jpeg scans in color, but at lower re
 ## Customization
 The `team` directory is hardwired in the  Perl source, and it can be changed.
 
-# Proper Installation
+# Init.d Installation
 `Netscan` was designed to be installed as an `/etc/init.d` script,
 and it reponds to standard `start`, `stop`, `restart`, and `status`.
 
