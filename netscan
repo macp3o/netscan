@@ -1,0 +1,71 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides: netscan
+# Required-Start: mountkernfs $local_fs ifupdown
+# Required-Stop: $local_fs
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Scan from a Dell 1600n network scanner to the team folder
+### END INIT INFO
+
+APP=`dirname $0`/dell1600n-net-scan.pl
+IP=`gethostip -d scanner`
+PID=/var/run/netscan.pid
+CFG=/etc/netscan
+
+# scan FMT
+# Launch the scanner task
+function scan {
+	local RESOLUTION
+	if [ $1 == jpeg ]; then RESOLUTION=200; else RESOLUTION=300; fi
+
+	$APP --1600n \
+		--listen $IP --name TEAM$1 \
+		--format $1 --resolution $RESOLUTION --multi-session --option team &
+	echo $! >$PID
+}
+
+# -- Start and stop
+function start {
+	local MODE=`< $CFG`
+	scan $MODE
+	echo "netscan $MODE started"
+}
+function stop {
+	[ -e $PID ] && 	kill `< $PID` && rm -f $PID
+	echo 'netscan stopped'
+}
+
+# -- INIT dispatcher
+case "$1" in
+	start) start
+	;;
+	stop) stop
+	;;
+	restart)
+		stop
+		start
+	 ;;
+	status)
+		if ! [ -e $PID ]; then
+			echo 'netscan is stopped'
+		else
+			echo "netscan `< $CFG` is running"
+		fi
+	;;
+
+	pdf | tiff | jpeg)
+		stop
+		echo $1 > $CFG
+		start
+	;;
+
+	*)
+		echo "Usage: netscan {start|stop|restart|status|pdf|tiff|jpeg}"
+		echo 'jpeg scans in color'
+	;;
+esac
+
+exit 0
+
+
