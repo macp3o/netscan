@@ -54,6 +54,11 @@ case "$1" in
 		fi
 	;;
 
+	color)
+		stop
+		echo jpeg > $CFG
+		start
+	;;
 	pdf | tiff | jpeg)
 		stop
 		echo $1 > $CFG
@@ -61,7 +66,7 @@ case "$1" in
 	;;
 
 	*)
-		echo "Usage: netscan {start|stop|restart|status|pdf|tiff|jpeg}"
+		echo "Usage: netscan {start|stop|restart|status|pdf|tiff|jpeg|color}"
 		echo 'jpeg scans in color'
 	;;
 esac
