@@ -13,22 +13,24 @@ IP=`gethostip -d scanner`
 PID=/var/run/netscan.pid
 CFG=/etc/netscan
 
-# scan FMT
+# scan FMT FOLDER
 # Launch the scanner task
 function scan {
 	local RESOLUTION
 	if [ $1 == jpeg ]; then RESOLUTION=200; else RESOLUTION=300; fi
+	local FOLDER
+	if [ $2 == here ]; then FOLDER=here; else FOLDER=team; fi
 
 	$APP --1600n \
 		--listen $IP --name TEAM$1 \
-		--format $1 --resolution $RESOLUTION --multi-session --option team &
+		--format $1 --resolution $RESOLUTION --multi-session --option $FOLDER &
 	echo $! >$PID
 }
 
 # -- Start and stop
 function start {
 	local MODE=`< $CFG`
-	scan $MODE
+	scan $MODE $1
 	echo "netscan $MODE started"
 }
 function stop {
@@ -38,13 +40,13 @@ function stop {
 
 # -- INIT dispatcher
 case "$1" in
-	start) start
+	start) start $2
 	;;
 	stop) stop
 	;;
 	restart)
 		stop
-		start
+		start $2
 	 ;;
 	status)
 		if ! [ -e $PID ]; then
@@ -57,12 +59,12 @@ case "$1" in
 	color)
 		stop
 		echo jpeg > $CFG
-		start
+		start $2
 	;;
 	pdf | tiff | jpeg)
 		stop
 		echo $1 > $CFG
-		start
+		start $2
 	;;
 
 	*)

@@ -176,6 +176,10 @@ $main::options{ "team" } = {
     "cmd" => "chown team &infiles;; mv -v &infiles; /home/team/",
     "description" => "Move scanned files to the team folder"
     };
+$main::options{ "here" } = {
+    "cmd" => "chown team &infiles;; mv -v &infiles; ./",
+    "description" => "Move scanned files to the current folder"
+    };
 
 #=========================================================================
 
